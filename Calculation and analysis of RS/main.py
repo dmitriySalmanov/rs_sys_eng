@@ -2,8 +2,10 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QRegExp
 from PyQt5.QtGui import QRegExpValidator, QDoubleValidator, QIntValidator
+from PyQt5.QtWidgets import QLineEdit
+
 from des import *
-from convertorscr import convert_kg
+from convertorscr import convertor_math_module
 
 
 class MyWin(QtWidgets.QMainWindow):
@@ -15,35 +17,35 @@ class MyWin(QtWidgets.QMainWindow):
 
         # Валидаторы для lineEdit
         validator = QRegExpValidator(QRegExp(r'\d+\.\d+'))
-        #validator_for_int = QIntValidator(0,10000)
         self.ui.lineEdit_kg.setValidator(validator)
-        self.ui.lineEdit_kn.setValidator(validator)
+        self.ui.lineEdit_kN.setValidator(validator)
 
         # Подключаем обработчики изменения текста
-        self.ui.lineEdit_kg.textChanged.connect(self.from_kg_to_kn)
-        self.ui.lineEdit_kn.textChanged.connect(self.from_kn_to_kg)
+        self.ui.lineEdit_kg.textChanged.connect(lambda: self.convert_force('kg'))
+        self.ui.lineEdit_kN.textChanged.connect(lambda: self.convert_force('kN'))
 
+        self.testing_some_str()
 
-    def from_kg_to_kn(self):
-        """Обновляем второй QLineEdit на основе первого."""
+    def convert_force(self, key_force):
+        '''
+        -Описание: Метод обрабатывает lineEdit'ы, пересчитывает единицы измерения силы и выводит их в соответствующую строку
+        -Принимает: key - str значение/флаг соответствующее конкретной единице измерения
+        -Возвращает: Ничего
+        '''
         try:
-            #kg = float(self.ui.lineEdit_kg.text())
-            kn = convert_kg(float(self.ui.lineEdit_kg.text()))
-            self.ui.lineEdit_kn.setText(f"{kn:.2f}".rstrip('0').rstrip('.'))
-        except ValueError:
-            self.ui.lineEdit_kn.setText("")
-
-    def from_kn_to_kg(self):
-        """Обновляем первый QLineEdit на основе второго."""
-        try:
-            kn = float(self.ui.lineEdit_kn.text())
-            kg = (kn * 1000) / 9.8
-            #self.ui.lineEdit_kg.setText(str(int(kg)))
-            #self.ui.lineEdit_kg.setText(f"{kg:.2f}".rstrip('0').rstrip('.'))
-            self.ui.lineEdit_kg.setText(f"{kg:.0f}")
+            if key_force == 'kg':
+                kn = convertor_math_module(float(self.ui.lineEdit_kg.text()))
+                self.ui.lineEdit_kN.setText(f"{kn:.2f}".rstrip('0').rstrip('.')) #Выдает очень странное скругление
+            elif key_force == 'kN':
+                kn = float(self.ui.lineEdit_kN.text())
+                kg = (kn * 1000) / 9.8
+                self.ui.lineEdit_kg.setText(f"{kg:.0f}") #Выдает очень странное скругление
         except ValueError:
             self.ui.lineEdit_kg.setText("")
 
+    def testing_some_str(self):
+        for child in self.findChildren(QLineEdit):
+            print('name - ', child.objectName().split('_')[-1])
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

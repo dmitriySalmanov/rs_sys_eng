@@ -9,33 +9,76 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QRegExp
-from PyQt5.QtGui import QRegExpValidator
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
+        MainWindow.resize(800, 700)
+        MainWindow.setMinimumSize(QtCore.QSize(700, 700))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox.setGeometry(QtCore.QRect(230, 140, 381, 291))
-        self.groupBox.setObjectName("groupBox")
-
-        self.lineEdit_kg = QtWidgets.QLineEdit(self.groupBox)
-        self.lineEdit_kg.setGeometry(QtCore.QRect(30, 30, 113, 20))
+        self.tabWidget_convertor = QtWidgets.QTabWidget(self.centralwidget)
+        self.tabWidget_convertor.setGeometry(QtCore.QRect(10, 10, 581, 451))
+        self.tabWidget_convertor.setObjectName("tabWidget_convertor")
+        self.tab_forces_and_moments = QtWidgets.QWidget()
+        self.tab_forces_and_moments.setObjectName("tab_forces_and_moments")
+        self.groupBox_force = QtWidgets.QGroupBox(self.tab_forces_and_moments)
+        self.groupBox_force.setGeometry(QtCore.QRect(10, 10, 220, 290))
+        self.groupBox_force.setObjectName("groupBox_force")
+        self.lineEdit_kg = QtWidgets.QLineEdit(self.groupBox_force)
+        self.lineEdit_kg.setGeometry(QtCore.QRect(10, 20, 161, 20))
+        self.lineEdit_kg.setText("")
         self.lineEdit_kg.setObjectName("lineEdit_kg")
-        self.lineEdit_kn = QtWidgets.QLineEdit(self.groupBox)
-        self.lineEdit_kn.setGeometry(QtCore.QRect(30, 60, 113, 20))
-        self.lineEdit_kn.setObjectName("lineEdit_kn")
-
+        self.lineEdit_kN = QtWidgets.QLineEdit(self.groupBox_force)
+        self.lineEdit_kN.setGeometry(QtCore.QRect(10, 50, 161, 20))
+        self.lineEdit_kN.setObjectName("lineEdit_kN")
+        self.label_kg = QtWidgets.QLabel(self.groupBox_force)
+        self.label_kg.setGeometry(QtCore.QRect(180, 20, 31, 16))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_kg.setFont(font)
+        self.label_kg.setObjectName("label_kg")
+        self.label_kN = QtWidgets.QLabel(self.groupBox_force)
+        self.label_kN.setGeometry(QtCore.QRect(180, 50, 31, 16))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setUnderline(False)
+        font.setWeight(50)
+        font.setStrikeOut(False)
+        self.label_kN.setFont(font)
+        self.label_kN.setObjectName("label_kN")
+        self.groupBox_moment = QtWidgets.QGroupBox(self.tab_forces_and_moments)
+        self.groupBox_moment.setGeometry(QtCore.QRect(240, 10, 220, 290))
+        self.groupBox_moment.setObjectName("groupBox_moment")
+        self.tabWidget_convertor.addTab(self.tab_forces_and_moments, "")
+        self.tab_2 = QtWidgets.QWidget()
+        self.tab_2.setObjectName("tab_2")
+        self.tabWidget_convertor.addTab(self.tab_2, "")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
+        self.tabWidget_convertor.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.groupBox.setTitle(_translate("MainWindow", "GroupBox"))
+        self.groupBox_force.setTitle(_translate("MainWindow", "Силы"))
+        self.label_kg.setText(_translate("MainWindow", "кг"))
+        self.label_kN.setText(_translate("MainWindow", "кН"))
+        self.groupBox_moment.setTitle(_translate("MainWindow", "Моменты"))
+        self.tabWidget_convertor.setTabText(self.tabWidget_convertor.indexOf(self.tab_forces_and_moments), _translate("MainWindow", "Силы и моменты"))
+        self.tabWidget_convertor.setTabText(self.tabWidget_convertor.indexOf(self.tab_2), _translate("MainWindow", "Tab 2"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())

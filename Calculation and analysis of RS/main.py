@@ -5,6 +5,7 @@ from PyQt5.QtGui import QRegExpValidator, QDoubleValidator, QIntValidator
 from PyQt5.QtWidgets import QLineEdit
 from convertor_branch import ConvertorBranch
 
+
 from des import *
 
 if __name__ == '__main__':

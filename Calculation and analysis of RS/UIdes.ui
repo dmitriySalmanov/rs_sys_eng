@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>RosmaryCandA</class>
+ <widget class="QMainWindow" name="RosmaryCandA">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -18,6 +18,16 @@
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="res.qrc">
+    <normaloff>:/icon/resources/RosmaryC&amp;A.png</normaloff>:/icon/resources/RosmaryC&amp;A.png</iconset>
+  </property>
+  <property name="iconSize">
+   <size>
+    <width>24</width>
+    <height>24</height>
+   </size>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTabWidget" name="tabWidget_convertor">
@@ -65,7 +75,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>80</y>
+         <y>110</y>
          <width>150</width>
          <height>20</height>
         </rect>
@@ -96,7 +106,7 @@
        <property name="geometry">
         <rect>
          <x>160</x>
-         <y>80</y>
+         <y>110</y>
          <width>31</width>
          <height>16</height>
         </rect>
@@ -119,7 +129,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>50</y>
+         <y>80</y>
          <width>150</width>
          <height>20</height>
         </rect>
@@ -129,7 +139,7 @@
        <property name="geometry">
         <rect>
          <x>160</x>
-         <y>50</y>
+         <y>80</y>
          <width>31</width>
          <height>16</height>
         </rect>
@@ -148,7 +158,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>110</y>
+         <y>170</y>
          <width>150</width>
          <height>20</height>
         </rect>
@@ -158,7 +168,7 @@
        <property name="geometry">
         <rect>
          <x>160</x>
-         <y>110</y>
+         <y>170</y>
          <width>31</width>
          <height>16</height>
         </rect>
@@ -177,7 +187,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>140</y>
+         <y>200</y>
          <width>150</width>
          <height>20</height>
         </rect>
@@ -187,7 +197,7 @@
        <property name="geometry">
         <rect>
          <x>160</x>
-         <y>140</y>
+         <y>200</y>
          <width>31</width>
          <height>16</height>
         </rect>
@@ -206,7 +216,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>170</y>
+         <y>230</y>
          <width>150</width>
          <height>20</height>
         </rect>
@@ -216,7 +226,7 @@
        <property name="geometry">
         <rect>
          <x>160</x>
-         <y>170</y>
+         <y>230</y>
          <width>41</width>
          <height>16</height>
         </rect>
@@ -229,6 +239,93 @@
        </property>
        <property name="text">
         <string>:фунт</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEdit_T">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>150</width>
+         <height>20</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_T">
+       <property name="geometry">
+        <rect>
+         <x>160</x>
+         <y>50</y>
+         <width>31</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <italic>true</italic>
+        </font>
+       </property>
+       <property name="text">
+        <string>:T</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEdit_MN">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>140</y>
+         <width>150</width>
+         <height>20</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_MN">
+       <property name="geometry">
+        <rect>
+         <x>160</x>
+         <y>140</y>
+         <width>31</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <italic>true</italic>
+        </font>
+       </property>
+       <property name="text">
+        <string>:МН</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEdit_kip">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>260</y>
+         <width>150</width>
+         <height>20</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_kip">
+       <property name="geometry">
+        <rect>
+         <x>160</x>
+         <y>260</y>
+         <width>41</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <italic>true</italic>
+        </font>
+       </property>
+       <property name="text">
+        <string>:kip</string>
        </property>
       </widget>
      </widget>
@@ -265,6 +362,8 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections/>
 </ui>

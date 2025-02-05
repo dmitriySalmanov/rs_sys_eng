@@ -4,7 +4,7 @@ from PyQt5.QtCore import QRegExp
 from PyQt5.QtGui import QRegExpValidator, QDoubleValidator, QIntValidator
 from PyQt5.QtWidgets import QLineEdit
 from des import *
-from unit_conversion import kN, N
+from unit_conversion import *
 
 
 class ConvertorBranch(QtWidgets.QMainWindow):
@@ -13,32 +13,21 @@ class ConvertorBranch(QtWidgets.QMainWindow):
         self.convertor_ui = Ui_RosmaryCandA()
         self.convertor_ui.setupUi(self)
 
-        # Валидаторы для lineEdit для сил
+        # Валидаторы для lineEdit для сил и моментов
         validator = QRegExpValidator(QRegExp(r'\d*\.?\d+'))
-        self.convertor_ui.lineEdit_kg.setValidator(validator)
-        self.convertor_ui.lineEdit_kN.setValidator(validator)
-        self.convertor_ui.lineEdit_N.setValidator(validator)
-        self.convertor_ui.lineEdit_mN.setValidator(validator)
-        self.convertor_ui.lineEdit_daN.setValidator(validator)
-        self.convertor_ui.lineEdit_ib.setValidator(validator)
-        self.convertor_ui.lineEdit_T.setValidator(validator)
-        self.convertor_ui.lineEdit_MN.setValidator(validator)
-        self.convertor_ui.lineEdit_kip.setValidator(validator)
-
-        # Валидаторы для lineEdit для моментов
-        self.convertor_ui.lineEdit_moment1.setValidator(validator)
-        self.convertor_ui.lineEdit_moment2.setValidator(validator)
+        for line_edit in self.findChildren(QLineEdit):
+            line_edit.setValidator(validator)
 
         # Подключаем обработчики изменения текста для сил
-        self.convertor_ui.lineEdit_kg.textChanged.connect(lambda: self.convert_force('кг'))
-        self.convertor_ui.lineEdit_kN.textChanged.connect(lambda: self.convert_force('кН'))
-        self.convertor_ui.lineEdit_N.textChanged.connect(lambda: self.convert_force('Н'))
-        self.convertor_ui.lineEdit_mN.textChanged.connect(lambda: self.convert_force('мН'))
-        self.convertor_ui.lineEdit_daN.textChanged.connect(lambda: self.convert_force('даН'))
-        self.convertor_ui.lineEdit_ib.textChanged.connect(lambda: self.convert_force('фунт'))
-        self.convertor_ui.lineEdit_T.textChanged.connect(lambda: self.convert_force('Т'))
-        self.convertor_ui.lineEdit_MN.textChanged.connect(lambda: self.convert_force('МН'))
-        self.convertor_ui.lineEdit_kip.textChanged.connect(lambda: self.convert_force('кип'))
+        self.convertor_ui.lineEdit_kg.textChanged.connect(lambda: self.convert_force('kg'))
+        self.convertor_ui.lineEdit_kN.textChanged.connect(lambda: self.convert_force('kN'))
+        self.convertor_ui.lineEdit_N.textChanged.connect(lambda: self.convert_force('N'))
+        self.convertor_ui.lineEdit_mN.textChanged.connect(lambda: self.convert_force('mN'))
+        self.convertor_ui.lineEdit_daN.textChanged.connect(lambda: self.convert_force('daN'))
+        self.convertor_ui.lineEdit_ib.textChanged.connect(lambda: self.convert_force('ib'))
+        self.convertor_ui.lineEdit_T.textChanged.connect(lambda: self.convert_force('T'))
+        self.convertor_ui.lineEdit_MN.textChanged.connect(lambda: self.convert_force('MN'))
+        self.convertor_ui.lineEdit_kip.textChanged.connect(lambda: self.convert_force('kip'))
 
         # Подключаем обработчики изменения текста для моментво
         self.convertor_ui.lineEdit_moment1.textChanged.connect(self.convert_moment)
@@ -48,206 +37,107 @@ class ConvertorBranch(QtWidgets.QMainWindow):
         self.convertor_ui.comboBox_moment_f2.currentIndexChanged.connect(self.convert_moment)
         self.convertor_ui.comboBox_moment_ld2.currentIndexChanged.connect(self.convert_moment)
 
-    def convert_force(self, key_force):
+    def convert_force(self, unit):
         """
         -Описание: Метод обрабатывает lineEdit'ы, пересчитывает единицы измерения силы и выводит их в
         соответствующую строку
         -Принимает: key_force - str значение/флаг соответствующее конкретной единице измерения
         -Возвращает: Ничего
         """
-        g = 9.80665
-        ib_const = 2.20462
-        kgf = 453.59237
         try:
             # Отключаем обработчики, чтобы избежать рекурсии
-            self.convertor_ui.lineEdit_kg.blockSignals(True)
-            self.convertor_ui.lineEdit_kN.blockSignals(True)
-            self.convertor_ui.lineEdit_N.blockSignals(True)
-            self.convertor_ui.lineEdit_mN.blockSignals(True)
-            self.convertor_ui.lineEdit_daN.blockSignals(True)
-            self.convertor_ui.lineEdit_ib.blockSignals(True)
-            self.convertor_ui.lineEdit_T.blockSignals(True)
-            self.convertor_ui.lineEdit_MN.blockSignals(True)
-            self.convertor_ui.lineEdit_kip.blockSignals(True)
+            for line_edit in self.findChildren(QLineEdit):
+                if (line_edit != self.convertor_ui.lineEdit_moment1 and
+                        line_edit != self.convertor_ui.lineEdit_moment2):
+                    line_edit.blockSignals(True)
 
             # Математический блок с проверкой по ключам
-            if key_force == 'кг':
+            if unit == 'kg':
                 kg = float(self.convertor_ui.lineEdit_kg.text())
-                n = kg * g
-                mn = n * 1000
-                dan = n / 10
-                ib = kg * ib_const
-                t = kg / 1000
-                mil_n = n / 10 ** 6
-                kip = kg / kgf
-                self.convertor_ui.lineEdit_kN.setText(f"{kN(kg, key_force):.2f}")
-                self.convertor_ui.lineEdit_N.setText(f"{N(kg, key_force):.2f}")
-                self.convertor_ui.lineEdit_mN.setText(f"{mn:.2f}")
-                self.convertor_ui.lineEdit_daN.setText(f"{dan:.2f}")
-                self.convertor_ui.lineEdit_ib.setText(f"{ib:.2f}")
-                self.convertor_ui.lineEdit_T.setText(f"{t:.2f}")
-                self.convertor_ui.lineEdit_MN.setText(f"{mil_n:.2f}")
-                self.convertor_ui.lineEdit_kip.setText(f"{kip:.2f}")
-            elif key_force == 'кН':
+                for line_edit in self.findChildren(QLineEdit):
+                    if (line_edit != self.convertor_ui.lineEdit_kg and
+                            line_edit != self.convertor_ui.lineEdit_moment1 and
+                            line_edit != self.convertor_ui.lineEdit_moment2):
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(kg, unit, unit_name):.2f}")
+            elif unit == 'kN':
                 kn = float(self.convertor_ui.lineEdit_kN.text())
-                kg = (kn * 1000) / g
-                n = kn * 1000
-                mn = n * 1000
-                dan = n / 10
-                ib = kg * ib_const
-                t = kg / 1000
-                mil_n = n / 10 ** 6
-                kip = kg / kgf
-                self.convertor_ui.lineEdit_kg.setText(f"{kg:.2f}")
-                self.convertor_ui.lineEdit_N.setText(f"{N(kn, key_force):.2f}")
-                self.convertor_ui.lineEdit_mN.setText(f"{mn:.2f}")
-                self.convertor_ui.lineEdit_daN.setText(f"{dan:.2f}")
-                self.convertor_ui.lineEdit_ib.setText(f"{ib:.2f}")
-                self.convertor_ui.lineEdit_T.setText(f"{t:.2f}")
-                self.convertor_ui.lineEdit_MN.setText(f"{mil_n:.2f}")
-                self.convertor_ui.lineEdit_kip.setText(f"{kip:.2f}")
-            elif key_force == 'Н':
+                for line_edit in self.findChildren(QLineEdit):
+                    if (line_edit != self.convertor_ui.lineEdit_kN and
+                            line_edit != self.convertor_ui.lineEdit_moment1 and
+                            line_edit != self.convertor_ui.lineEdit_moment2):
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(kn, unit, unit_name):.2f}")
+            elif unit == 'N':
                 n = float(self.convertor_ui.lineEdit_N.text())
-                kg = n / g
-                mn = n * 1000
-                dan = n / 10
-                ib = kg * ib_const
-                t = kg / 1000
-                mil_n = n / 10 ** 6
-                kip = kg / kgf
-                self.convertor_ui.lineEdit_kg.setText(f"{kg:.2f}")
-                self.convertor_ui.lineEdit_kN.setText(f"{kN(n, key_force):.2f}")
-                self.convertor_ui.lineEdit_mN.setText(f"{mn:.2f}")
-                self.convertor_ui.lineEdit_daN.setText(f"{dan:.2f}")
-                self.convertor_ui.lineEdit_ib.setText(f"{ib:.2f}")
-                self.convertor_ui.lineEdit_T.setText(f"{t:.2f}")
-                self.convertor_ui.lineEdit_MN.setText(f"{mil_n:.2f}")
-                self.convertor_ui.lineEdit_kip.setText(f"{kip:.2f}")
-            elif key_force == 'мН':
+                for line_edit in self.findChildren(QLineEdit):
+                    if (line_edit != self.convertor_ui.lineEdit_N and
+                            line_edit != self.convertor_ui.lineEdit_moment1 and
+                            line_edit != self.convertor_ui.lineEdit_moment2):
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(n, unit, unit_name):.2f}")
+            elif unit == 'mN':
                 mn = float(self.convertor_ui.lineEdit_mN.text())
-                kg = (mn / 1000) / g
-                n = kg * g
-                dan = n / 10
-                ib = kg * ib_const
-                t = kg / 1000
-                mil_n = n / 10 ** 6
-                kip = kg / kgf
-                self.convertor_ui.lineEdit_kg.setText(f"{kg:.2f}")
-                self.convertor_ui.lineEdit_N.setText(f"{N(mn, key_force):.2f}")
-                self.convertor_ui.lineEdit_kN.setText(f"{kN(mn, key_force):.2f}")
-                self.convertor_ui.lineEdit_daN.setText(f"{dan:.2f}")
-                self.convertor_ui.lineEdit_ib.setText(f"{ib:.2f}")
-                self.convertor_ui.lineEdit_T.setText(f"{t:.2f}")
-                self.convertor_ui.lineEdit_MN.setText(f"{mil_n:.2f}")
-                self.convertor_ui.lineEdit_kip.setText(f"{kip:.2f}")
-            elif key_force == 'даН':
+                for line_edit in self.findChildren(QLineEdit):
+                    if (line_edit != self.convertor_ui.lineEdit_mN and
+                            line_edit != self.convertor_ui.lineEdit_moment1 and
+                            line_edit != self.convertor_ui.lineEdit_moment2):
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(mn, unit, unit_name):.2f}")
+            elif unit == 'daN':
                 dan = float(self.convertor_ui.lineEdit_daN.text())
-                n = dan * 10
-                kg = n / g
-                mn = n * 1000
-                ib = kg * ib_const
-                t = kg / 1000
-                mil_n = n / 10 ** 6
-                kip = kg / kgf
-                self.convertor_ui.lineEdit_kg.setText(f"{kg:.2f}")
-                self.convertor_ui.lineEdit_N.setText(f"{N(dan, key_force):.2f}")
-                self.convertor_ui.lineEdit_kN.setText(f"{kN(dan, key_force):.2f}")
-                self.convertor_ui.lineEdit_mN.setText(f"{mn:.2f}")
-                self.convertor_ui.lineEdit_ib.setText(f"{ib:.2f}")
-                self.convertor_ui.lineEdit_T.setText(f"{t:.2f}")
-                self.convertor_ui.lineEdit_MN.setText(f"{mil_n:.2f}")
-                self.convertor_ui.lineEdit_kip.setText(f"{kip:.2f}")
-            elif key_force == 'фунт':
+                for line_edit in self.findChildren(QLineEdit):
+                    if (line_edit != self.convertor_ui.lineEdit_daN and
+                            line_edit != self.convertor_ui.lineEdit_moment1 and
+                            line_edit != self.convertor_ui.lineEdit_moment2):
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(dan, unit, unit_name):.2f}")
+            elif unit == 'ib':
                 ib = float(self.convertor_ui.lineEdit_ib.text())
-                kg = ib / ib_const
-                n = kg * g
-                mn = n * 1000
-                dan = n / 10
-                t = kg / 1000
-                mil_n = n / 10 ** 6
-                kip = kg / kgf
-                self.convertor_ui.lineEdit_kg.setText(f"{kg:.2f}")
-                self.convertor_ui.lineEdit_N.setText(f"{N(ib, key_force):.2f}")
-                self.convertor_ui.lineEdit_kN.setText(f"{kN(ib, key_force):.2f}")
-                self.convertor_ui.lineEdit_mN.setText(f"{mn:.2f}")
-                self.convertor_ui.lineEdit_daN.setText(f"{dan:.2f}")
-                self.convertor_ui.lineEdit_T.setText(f"{t:.2f}")
-                self.convertor_ui.lineEdit_MN.setText(f"{mil_n:.2f}")
-                self.convertor_ui.lineEdit_kip.setText(f"{kip:.2f}")
-            elif key_force == 'Т':
+                for line_edit in self.findChildren(QLineEdit):
+                    if (line_edit != self.convertor_ui.lineEdit_ib and
+                            line_edit != self.convertor_ui.lineEdit_moment1 and
+                            line_edit != self.convertor_ui.lineEdit_moment2):
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(ib, unit, unit_name):.2f}")
+            elif unit == 'T':
                 t = float(self.convertor_ui.lineEdit_T.text())
-                kg = t * 1000
-                n = kg * g
-                mn = n * 1000
-                dan = n / 10
-                ib = kg * ib_const
-                mil_n = n / 10 ** 6
-                kip = kg / kgf
-                self.convertor_ui.lineEdit_kg.setText(f"{kg:.2f}")
-                self.convertor_ui.lineEdit_N.setText(f"{N(t, key_force):.2f}")
-                self.convertor_ui.lineEdit_kN.setText(f"{kN(t, key_force):.2f}")
-                self.convertor_ui.lineEdit_mN.setText(f"{mn:.2f}")
-                self.convertor_ui.lineEdit_daN.setText(f"{dan:.2f}")
-                self.convertor_ui.lineEdit_ib.setText(f"{ib:.2f}")
-                self.convertor_ui.lineEdit_MN.setText(f"{mil_n:.2f}")
-                self.convertor_ui.lineEdit_kip.setText(f"{kip:.2f}")
-            elif key_force == 'МН':
+                for line_edit in self.findChildren(QLineEdit):
+                    if (line_edit != self.convertor_ui.lineEdit_T and
+                            line_edit != self.convertor_ui.lineEdit_moment1 and
+                            line_edit != self.convertor_ui.lineEdit_moment2):
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(t, unit, unit_name):.2f}")
+            elif unit == 'MN':
                 mil_n = float(self.convertor_ui.lineEdit_MN.text())
-                n = mil_n * 10 ** 6
-                kg = n / g
-                mn = n * 1000
-                dan = n / 10
-                ib = kg * ib_const
-                t = kg / 1000
-                kip = kg / kgf
-                self.convertor_ui.lineEdit_kg.setText(f"{kg:.2f}")
-                self.convertor_ui.lineEdit_N.setText(f"{N(mil_n, key_force):.2f}")
-                self.convertor_ui.lineEdit_kN.setText(f"{kN(mil_n, key_force):.2f}")
-                self.convertor_ui.lineEdit_mN.setText(f"{mn:.2f}")
-                self.convertor_ui.lineEdit_daN.setText(f"{dan:.2f}")
-                self.convertor_ui.lineEdit_ib.setText(f"{ib:.2f}")
-                self.convertor_ui.lineEdit_T.setText(f"{t:.2f}")
-                self.convertor_ui.lineEdit_kip.setText(f"{kip:.2f}")
-            elif key_force == 'кип':
+                for line_edit in self.findChildren(QLineEdit):
+                    if (line_edit != self.convertor_ui.lineEdit_MN and
+                            line_edit != self.convertor_ui.lineEdit_moment1 and
+                            line_edit != self.convertor_ui.lineEdit_moment2):
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(mil_n, unit, unit_name):.2f}")
+            elif unit == 'kip':
                 kip = float(self.convertor_ui.lineEdit_kip.text())
-                kg = kip * kgf
-                n = kg * g
-                mn = n * 1000
-                dan = n / 10
-                ib = kg * ib_const
-                t = kg / 1000
-                mil_n = n / 10 ** 6
-                self.convertor_ui.lineEdit_kg.setText(f"{kg:.2f}")
-                self.convertor_ui.lineEdit_N.setText(f"{N(kip, key_force):.2f}")
-                self.convertor_ui.lineEdit_kN.setText(f"{kN(kip, key_force):.2f}")
-                self.convertor_ui.lineEdit_mN.setText(f"{mn:.2f}")
-                self.convertor_ui.lineEdit_daN.setText(f"{dan:.2f}")
-                self.convertor_ui.lineEdit_ib.setText(f"{ib:.2f}")
-                self.convertor_ui.lineEdit_T.setText(f"{t:.2f}")
-                self.convertor_ui.lineEdit_MN.setText(f"{mil_n:.2f}")
+                for line_edit in self.findChildren(QLineEdit):
+                    if (line_edit != self.convertor_ui.lineEdit_kip and
+                            line_edit != self.convertor_ui.lineEdit_moment1 and
+                            line_edit != self.convertor_ui.lineEdit_moment2):
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(kip, unit, unit_name):.2f}")
 
         except ValueError:
             # Очищаем все поля
-            self.convertor_ui.lineEdit_kg.clear()
-            self.convertor_ui.lineEdit_kN.clear()
-            self.convertor_ui.lineEdit_N.clear()
-            self.convertor_ui.lineEdit_mN.clear()
-            self.convertor_ui.lineEdit_daN.clear()
-            self.convertor_ui.lineEdit_ib.clear()
-            self.convertor_ui.lineEdit_T.clear()
-            self.convertor_ui.lineEdit_MN.clear()
-            self.convertor_ui.lineEdit_kip.clear()
+            for line_edit in self.findChildren(QLineEdit):
+                if (line_edit != self.convertor_ui.lineEdit_moment1 and
+                        line_edit != self.convertor_ui.lineEdit_moment2):
+                    line_edit.clear()
+
         finally:
             # Возвращаем обработчики
-            self.convertor_ui.lineEdit_kg.blockSignals(False)
-            self.convertor_ui.lineEdit_kN.blockSignals(False)
-            self.convertor_ui.lineEdit_N.blockSignals(False)
-            self.convertor_ui.lineEdit_mN.blockSignals(False)
-            self.convertor_ui.lineEdit_daN.blockSignals(False)
-            self.convertor_ui.lineEdit_ib.blockSignals(False)
-            self.convertor_ui.lineEdit_T.blockSignals(False)
-            self.convertor_ui.lineEdit_MN.blockSignals(False)
-            self.convertor_ui.lineEdit_kip.blockSignals(False)
+            for line_edit in self.findChildren(QLineEdit):
+                if (line_edit != self.convertor_ui.lineEdit_moment1 and
+                        line_edit != self.convertor_ui.lineEdit_moment2):
+                    line_edit.blockSignals(False)
 
     def convert_moment(self):
         """
@@ -256,10 +146,49 @@ class ConvertorBranch(QtWidgets.QMainWindow):
         -Принимает: Ничего
         -Возвращает: Ничего
         """
-        g = 9.80665
-        ib_const = 2.20462
-        kgf = 453.59237
-        length_measurement = {'м': 1, 'см': 100, 'мм': 1000, 'дюйм': 39.37008, 'фут': 3.28084}
+        length_measurement = {'m': 1, 'cm': 100, 'mm': 1000, 'inch': 39.37008, 'foot': 3.28084}
+
+        try:
+            # Отключаем обработчики, чтобы избежать рекурсии
+            self.convertor_ui.lineEdit_moment1.blockSignals(True)
+            self.convertor_ui.lineEdit_moment2.blockSignals(True)
+
+            # Получаем входные данные
+            moment_value = float(self.convertor_ui.lineEdit_moment1.text())
+
+            force_input = self.convertor_ui.comboBox_moment_f1.currentText()
+            linear_dimension_input = self.convertor_ui.comboBox_moment_ld1.currentText()
+
+            force_output = self.convertor_ui.comboBox_moment_f2.currentText()
+            linear_dimension_output = self.convertor_ui.comboBox_moment_ld2.currentText()
+
+            # Если входные и выходные единицы одинаковы — просто копируем значение
+            if force_input == force_output and linear_dimension_input == linear_dimension_output:
+                self.convertor_ui.lineEdit_moment2.setText(f"{moment_value:.3f}")
+                return  # Досрочно завершаем метод
+
+            # Обработка перевода моментов сил
+            moment_output = (convert(moment_value, force_input, force_output) *
+                             (length_measurement[linear_dimension_output] /
+                              length_measurement[linear_dimension_input]))
+            self.convertor_ui.lineEdit_moment2.setText(f"{moment_output:.3f}")
+
+        except ValueError:
+            # Очищаем все поля
+            self.convertor_ui.lineEdit_moment1.clear()
+            self.convertor_ui.lineEdit_moment2.clear()
+
+        finally:
+            # Включаем обработчики обратно
+            self.convertor_ui.lineEdit_moment1.blockSignals(False)
+            self.convertor_ui.lineEdit_moment2.blockSignals(False)
+
+        '''
+        force_outputs = [self.convertor_ui.comboBox_moment_f1.itemText(i)
+                         for i in range(self.convertor_ui.comboBox_moment_f1.count())]
+        linear_dimension_outputs = [self.convertor_ui.comboBox_moment_ld1.itemText(i)
+                                    for i in range(self.convertor_ui.comboBox_moment_ld1.count())]
+        length_measurement = {'m': 1, 'cm': 100, 'mm': 1000, 'inch': 39.37008, 'foot': 3.28084}
         try:
             # Отключаем обработчики, чтобы избежать рекурсии
             self.convertor_ui.lineEdit_moment1.blockSignals(True)
@@ -276,29 +205,79 @@ class ConvertorBranch(QtWidgets.QMainWindow):
             force_output = self.convertor_ui.comboBox_moment_f2.currentText()
             linear_dimension_output = self.convertor_ui.comboBox_moment_ld2.currentText()
 
-            # Оброботка кг в кН
-            if force_input == 'кг' and linear_dimension_input == 'м':
-                if force_output == 'кН' and linear_dimension_output == 'мм':
-                    moment_output = kN(moment_value, force_input) * length_measurement[linear_dimension_output]
+            # Оброботка кг
+            if force_input == 'kg' and linear_dimension_input == 'm':
+                for force_out in force_outputs:
+                    for linear_out in linear_dimension_outputs:
+                        if force_output == force_out and linear_dimension_output == linear_out:
+                            moment_output = (convert(moment_value, force_input, force_output)
+                                             * length_measurement[linear_dimension_output])
+                            self.convertor_ui.lineEdit_moment2.setText(f"{moment_output:.2f}")
+                        elif force_input == force_output and linear_dimension_input == linear_dimension_output:
+                            self.convertor_ui.lineEdit_moment2.setText(f"{moment_value:.2f}")
+                            break
+
+
+            """
+            if force_input == 'kg' and linear_dimension_input == 'm':
+                if force_output == 'kN' and linear_dimension_output == 'mm':
+                    moment_output = (convert(moment_value, force_input, force_output)
+                                     * length_measurement[linear_dimension_output])
                     self.convertor_ui.lineEdit_moment2.setText(f"{moment_output:.2f}")
-                elif force_output == 'кН' and linear_dimension_output == 'м':
-                    moment_output = kN(moment_value, force_input) * length_measurement[linear_dimension_output]
+
+                elif force_output == 'kN' and linear_dimension_output == 'm':
+                    moment_output = (convert(moment_value, force_input, force_output)
+                                     * length_measurement[linear_dimension_output])
                     self.convertor_ui.lineEdit_moment2.setText(f"{moment_output:.2f}")
-                elif force_output == 'кН' and linear_dimension_output == 'см':
-                    moment_output = kN(moment_value, force_input) * length_measurement[linear_dimension_output]
+
+                elif force_output == 'kN' and linear_dimension_output == 'cm':
+                    moment_output = (convert(moment_value, force_input, force_output)
+                                     * length_measurement[linear_dimension_output])
                     self.convertor_ui.lineEdit_moment2.setText(f"{moment_output:.2f}")
-                elif force_output == 'кН' and linear_dimension_output == 'дюйм':
-                    moment_output = kN(moment_value, force_input) * length_measurement[linear_dimension_output]
+
+                elif force_output == 'kN' and linear_dimension_output == 'inch':
+                    moment_output = (convert(moment_value, force_input, force_output)
+                                     * length_measurement[linear_dimension_output])
                     self.convertor_ui.lineEdit_moment2.setText(f"{moment_output:.2f}")
-                elif force_output == 'кН' and linear_dimension_output == 'фут':
-                    moment_output = kN(moment_value, force_input) * length_measurement[linear_dimension_output]
+
+                elif force_output == 'kN' and linear_dimension_output == 'foot':
+                    moment_output = (convert(moment_value, force_input, force_output)
+                                     * length_measurement[linear_dimension_output])
                     self.convertor_ui.lineEdit_moment2.setText(f"{moment_output:.2f}")
+
+                if force_output == 'N' and linear_dimension_output == 'mm':
+                    moment_output = (convert(moment_value, force_input, force_output)
+                                     * length_measurement[linear_dimension_output])
+                    self.convertor_ui.lineEdit_moment2.setText(f"{moment_output:.2f}")
+
+                elif force_output == 'N' and linear_dimension_output == 'm':
+                    moment_output = (convert(moment_value, force_input, force_output)
+                                     * length_measurement[linear_dimension_output])
+                    self.convertor_ui.lineEdit_moment2.setText(f"{moment_output:.2f}")
+
+                elif force_output == 'N' and linear_dimension_output == 'cm':
+                    moment_output = (convert(moment_value, force_input, force_output)
+                                     * length_measurement[linear_dimension_output])
+                    self.convertor_ui.lineEdit_moment2.setText(f"{moment_output:.2f}")
+
+                elif force_output == 'N' and linear_dimension_output == 'inch':
+                    moment_output = (convert(moment_value, force_input, force_output)
+                                     * length_measurement[linear_dimension_output])
+                    self.convertor_ui.lineEdit_moment2.setText(f"{moment_output:.2f}")
+
+                elif force_output == 'N' and linear_dimension_output == 'foot':
+                    moment_output = (convert(moment_value, force_input, force_output)
+                                     * length_measurement[linear_dimension_output])
+                    self.convertor_ui.lineEdit_moment2.setText(f"{moment_output:.2f}")
+                """
 
         except ValueError:
             # Очищаем все поля
             self.convertor_ui.lineEdit_moment1.clear()
             self.convertor_ui.lineEdit_moment2.clear()
+
         finally:
             # Возвращаем обработчики
             self.convertor_ui.lineEdit_moment1.blockSignals(False)
             self.convertor_ui.lineEdit_moment2.blockSignals(False)
+        '''

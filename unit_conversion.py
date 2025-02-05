@@ -1,10 +1,193 @@
 g = 9.80665
 ib_const = 2.20462
 kgf = 453.59237
+ibn_const = 4.44822
+
+
+def convert(value=1, unit='kg', to_unit='kN'):
+
+    if to_unit == 'kN':
+        if unit == 'kg':
+            return (value * g) / 1000
+        elif unit == 'N':
+            return value / 1000
+        elif unit == 'T':
+            return (value * 1000 * g) / 1000
+        elif unit == 'MN':
+            return (value * (10 ** 6)) / 1000
+        elif unit == 'mN':
+            return (value / 1000) / 1000
+        elif unit == 'daN':
+            return (value * 10) / 1000
+        elif unit == 'ib':
+            return ((value / ib_const) * g) / 1000
+        elif unit == 'kip':
+            return ((value * kgf) * g) / 1000
+        else:
+            return 1
+
+    if to_unit == 'N':
+        if unit == 'kg':
+            return value * g
+        elif unit == 'kN':
+            return value * 1000
+        elif unit == 'T':
+            return value * 1000 * g
+        elif unit == 'MN':
+            return value * (10 ** 6)
+        elif unit == 'mN':
+            return value / 1000
+        elif unit == 'daN':
+            return value * 10
+        elif unit == 'ib':
+            return (value / ib_const) * g
+        elif unit == 'kip':
+            return (value * kgf) * g
+        else:
+            return value
+
+    if to_unit == 'kg':
+        if unit == 'N':
+            return value / g
+        elif unit == 'kN':
+            return (value * 1000) / g
+        elif unit == 'T':
+            return value * 1000
+        elif unit == 'MN':
+            return (value * (10 ** 6)) / g
+        elif unit == 'mN':
+            return (value / 1000) / g
+        elif unit == 'daN':
+            return (value * 10) / g
+        elif unit == 'ib':
+            return value / ib_const
+        elif unit == 'kip':
+            return value * kgf
+        else:
+            return value
+
+    if to_unit == 'mN':
+        if unit == 'N':
+            return value * 1000
+        elif unit == 'kN':
+            return value * 1000 * 1000
+        elif unit == 'T':
+            return ((value * 1000) * g) * 1000
+        elif unit == 'MN':
+            return (value * 10 ** 6) * 1000
+        elif unit == 'kg':
+            return value * g * 1000
+        elif unit == 'daN':
+            return (value * 10) * 1000
+        elif unit == 'ib':
+            return (value / ib_const) * g * 1000
+        elif unit == 'kip':
+            return value * kgf * g * 1000
+        else:
+            return value
+
+    if to_unit == 'MN':
+        if unit == 'N':
+            return value / 10 ** 6
+        elif unit == 'kN':
+            return (value * 1000) / 10 **6
+        elif unit == 'T':
+            return (value * 1000 * g) / 10 ** 6
+        elif unit == 'mN':
+            return (value / 1000) / 10 ** 6
+        elif unit == 'kg':
+            return (value * g) / 10 ** 6
+        elif unit == 'daN':
+            return (value * 10) / 10 ** 6
+        elif unit == 'ib':
+            return ((value / ib_const) * g) / 10 ** 6
+        elif unit == 'kip':
+            return (value * kgf * g) / 10 ** 6
+        else:
+            return value
+
+    if to_unit == 'daN':
+        if unit == 'N':
+            return value / 10
+        elif unit == 'kN':
+            return (value * 1000) / 10
+        elif unit == 'kg':
+            return (value * g) / 10
+        elif unit == 'T':
+            return (value * 1000 * g) / 10
+        elif unit == 'mN':
+            return (value / 1000) / 10
+        elif unit == 'MN':
+            return (value * (10 ** 6)) / 10
+        elif unit == 'ib':
+            return ((value / ib_const) * g) / 10
+        elif unit == 'kip':
+            return (value * kgf * g) / 10
+        else:
+            return value
+
+    if to_unit == 'ib':
+        if unit == 'N':
+            return (value / g) * ib_const
+        elif unit == 'kN':
+            return ((value * 1000) / g) * ib_const
+        elif unit == 'kg':
+            return value * ib_const
+        elif unit == 'T':
+            return value * 1000 * ib_const
+        elif unit == 'mN':
+            return ((value / 1000) / g) * ib_const
+        elif unit == 'MN':
+            return ((value * (10 ** 6)) / g) * ib_const
+        elif unit == 'daN':
+            return ((value * 10) / g) * ib_const
+        elif unit == 'kip':
+            return value * kgf * ib_const
+        else:
+            return value
+
+    if to_unit == 'kip':
+        if unit == 'N':
+            return (value / g) / kgf
+        elif unit == 'kN':
+            return ((value * 1000) / g) / kgf
+        elif unit == 'kg':
+            return value / kgf
+        elif unit == 'T':
+            return (value * 1000) / kgf
+        elif unit == 'mN':
+            return ((value / 1000) / g) / kgf
+        elif unit == 'MN':
+            return ((value * (10 ** 6)) / g) / kgf
+        elif unit == 'daN':
+            return ((value * 10) / g) / kgf
+        elif unit == 'ib':
+            return (value / ib_const) / kgf
+        else:
+            return value
+
+    if to_unit == 'T':
+        if unit == 'N':
+            return (value / g) / 1000
+        elif unit == 'kN':
+            return ((value * 1000) / g) / 1000
+        elif unit == 'kg':
+            return value / 1000
+        elif unit == 'mN':
+            return ((value / 1000) / g) / 1000
+        elif unit == 'MN':
+            return ((value * (10 ** 6)) / g) / 1000
+        elif unit == 'daN':
+            return ((value * 10) / g) / 1000
+        elif unit == 'ib':
+            return (value / ib_const) / 1000
+        elif unit == 'kip':
+            return (value * kgf) / 1000
+        else:
+            return value
 
 
 def kN(value=1, unit_key='кг'):
-
     """
     Описание: Функция переводит единицы измерения сил в килоньютон
     Принимает: value - int, float; unit_key - str(кг, Н, Т, МН, мН, даН, фунт, кип)
@@ -30,12 +213,10 @@ def kN(value=1, unit_key='кг'):
     else:
         return 1
 
-
 def N(value=1, unit_key='кг'):
-
     """
     Описание: Функция переводит единицы измерения сил в ньютон
-    Принимает: value - int, float; unit_key - str(кг, Н, Т, МН, мН, даН, фунт, кип)
+    Принимает: value - int, float; unit_key - str(кг, кН, Т, МН, мН, даН, фунт, кип)
     Возвращает: float (переведенные в Н значения)
     """
 
@@ -58,13 +239,153 @@ def N(value=1, unit_key='кг'):
     else:
         return 1
 
-'''
-print('кг - Н ',N(500.56, 'кг'))
-print('кН - Н ',N(28.71, 'кН'))
-print('Т - Н ',N(1.65, 'Т'))
-print('МН - Н ',N(5000.68, 'МН'))
-print('мН - Н ',N(612.5, 'мН'))
-print('даН - Н ',N(6621.19, 'даН'))
-print('фунт - Н ',N(311.9, 'фунт'))
-print('кип - Н ',N(12.38, 'кип'))
-'''
+def kg(value=1, unit_key='кН'):
+    """
+    Описание: Функция переводит единицы измерения сил в кгс
+    Принимает: value - int, float; unit_key - str(кН, Н, Т, МН, мН, даН, фунт, кип)
+    Возвращает: float (переведенные в кг значения)
+    """
+    if unit_key == 'Н':
+        return value / g
+    elif unit_key == 'кН':
+        return (value * 1000) / g
+    elif unit_key == 'Т':
+        return value * 1000
+    elif unit_key == 'МН':
+        return (value * (10 ** 6)) / g
+    elif unit_key == 'мН':
+        return (value / 1000) / g
+    elif unit_key == 'даН':
+        return (value * 10) / g
+    elif unit_key == 'фунт':
+        return value / ib_const
+    elif unit_key == 'кип':
+        return value * kgf
+    else:
+        return 1
+
+def mN(value=1, unit_key='кН'):
+    """
+    Описание: Функция переводит единицы измерения сил в кгс
+    Принимает: value - int, float; unit_key - str(кН, Н, Т, МН, даН, фунт, кип, кг)
+    Возвращает: float (переведенные в кг значения)
+    """
+    if unit_key == 'Н':
+        return value * 1000
+    elif unit_key == 'кН':
+        return value * 1000 * 1000
+    elif unit_key == 'Т':
+        return ((value * 1000) * g) * 1000
+    elif unit_key == 'МН':
+        return (value * 10 ** 6) * 1000
+    elif unit_key == 'кг':
+        return value * g * 1000
+    elif unit_key == 'даН':
+        return (value * 10) * 1000
+    elif unit_key == 'фунт':
+        return (value / ib_const) * g * 1000
+    elif unit_key == 'кип':
+        return value * kgf * g * 1000
+    else:
+        return 1
+
+def MN(value=1, unit_key='кН'):
+
+    if unit_key == 'Н':
+        return value / 10 ** 6
+    elif unit_key == 'кН':
+        return (value * 1000) / 10 ** 6
+    elif unit_key == 'Т':
+        return (value * 1000 * g) / 10 ** 6
+    elif unit_key == 'мН':
+        return (value / 1000) / 10 ** 6
+    elif unit_key == 'кг':
+        return (value * g) / 10 ** 6
+    elif unit_key == 'даН':
+        return (value * 10) / 10 ** 6
+    elif unit_key == 'фунт':
+        return ((value / ib_const) * g) / 10 ** 6
+    elif unit_key == 'кип':
+        return (value * kgf * g) / 10 ** 6
+    else:
+        return 1
+
+def T(value=1, unit_key='кН'):
+    if unit_key == 'Н':
+        return (value / g) / 1000
+    elif unit_key == 'кН':
+        return ((value * 1000) / g) / 1000
+    elif unit_key == 'кг':
+        return value / 1000
+    elif unit_key == 'мН':
+        return ((value / 1000) / g) / 1000
+    elif unit_key == 'МН':
+        return ((value * (10 ** 6)) / g) / 1000
+    elif unit_key == 'даН':
+        return ((value * 10) / g) / 1000
+    elif unit_key == 'фунт':
+        return (value / ib_const) / 1000
+    elif unit_key == 'кип':
+        return (value * kgf) / 1000
+    else:
+        return 1
+
+def kip(value=1, unit_key='кН'):
+    if unit_key == 'Н':
+        return (value / g) / kgf
+    elif unit_key == 'кН':
+        return ((value * 1000) / g) / kgf
+    elif unit_key == 'кг':
+        return value / kgf
+    elif unit_key == 'Т':
+        return (value * 1000) / kgf
+    elif unit_key == 'мН':
+        return ((value / 1000) / g) / kgf
+    elif unit_key == 'МН':
+        return ((value * (10 ** 6)) / g) / kgf
+    elif unit_key == 'даН':
+        return ((value * 10) / g) / kgf
+    elif unit_key == 'фунт':
+        return (value / ib_const) / kgf
+    else:
+        return 1
+
+def daN(value=1, unit_key='кН'):
+    if unit_key == 'Н':
+        return value / 10
+    elif unit_key == 'кН':
+        return (value * 1000) / 10
+    elif unit_key == 'кг':
+        return (value * g) / 10
+    elif unit_key == 'Т':
+        return (value * 1000 * g) / 10
+    elif unit_key == 'мН':
+        return (value / 1000) / 10
+    elif unit_key == 'МН':
+        return (value * (10 ** 6)) / 10
+    elif unit_key == 'фунт':
+        return ((value / ib_const) * g) / 10
+    elif unit_key == 'кип':
+        return (value * kgf * g) / 10
+    else:
+        return 1
+
+def ib(value=1, unit_key='кН'):
+    if unit_key == 'Н':
+        return (value / g) * ib_const
+    elif unit_key == 'кН':
+        return ((value * 1000) / g) * ib_const
+    elif unit_key == 'кг':
+        return value * ib_const
+    elif unit_key == 'Т':
+        return value * 1000 * ib_const
+    elif unit_key == 'мН':
+        return ((value / 1000) / g) * ib_const
+    elif unit_key == 'МН':
+        return ((value * (10 ** 6)) / g) * ib_const
+    elif unit_key == 'даН':
+        return ((value * 10) / g) * ib_const
+    elif unit_key == 'кип':
+        return value * kgf * ib_const
+    else:
+        return 1

@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QLineEdit
 from convertor_branch import ConvertorBranch
 
 
-from des import *
+from ui_designe import *
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

@@ -18,7 +18,7 @@ class Ui_RosmaryCandA(object):
         RosmaryCandA.setMinimumSize(QtCore.QSize(520, 370))
         RosmaryCandA.setMaximumSize(QtCore.QSize(520, 370))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icon/resources/RosmaryC&A.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icon/resources/iconvariantMain.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         RosmaryCandA.setWindowIcon(icon)
         RosmaryCandA.setIconSize(QtCore.QSize(24, 24))
         self.centralwidget = QtWidgets.QWidget(RosmaryCandA)

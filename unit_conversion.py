@@ -24,7 +24,7 @@ def convert(value=1, unit='kg', to_unit='kN'):
         elif unit == 'kip':
             return ((value * kgf) * g) / 1000
         else:
-            return 1
+            return value
 
     if to_unit == 'N':
         if unit == 'kg':

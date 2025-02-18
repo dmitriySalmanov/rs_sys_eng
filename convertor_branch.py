@@ -50,11 +50,33 @@ class ConvertorBranch(QtWidgets.QMainWindow):
         self.convertor_ui.lineEdit_pressure_4.textChanged.connect(lambda: self.convert_pressure('pressure_4'))
         self.convertor_ui.lineEdit_pressure_5.textChanged.connect(lambda: self.convert_pressure('pressure_5'))
 
+        # Подключаем обработчики изменения текста для линейных размеров
+        self.convertor_ui.lineEdit_mm.textChanged.connect(lambda: self.convert_dimensions('mm'))
+        self.convertor_ui.lineEdit_cm.textChanged.connect(lambda: self.convert_dimensions('cm'))
+        self.convertor_ui.lineEdit_m.textChanged.connect(lambda: self.convert_dimensions('m'))
+        self.convertor_ui.lineEdit_inch.textChanged.connect(lambda: self.convert_dimensions('inch'))
+        self.convertor_ui.lineEdit_foot.textChanged.connect(lambda: self.convert_dimensions('foot'))
+
+        # Подключаем обработчики изменения текста для углов
+        self.convertor_ui.lineEdit_degrees.textChanged.connect(lambda: self.convert_angles('degrees'))
+        self.convertor_ui.lineEdit_radians.textChanged.connect(lambda: self.convert_angles('radians'))
+
+        # Подключаем обработчики изменения текста для моментов инерции
+        self.convertor_ui.lineEdit_mm4.textChanged.connect(lambda: self.convert_inertia('mm4'))
+        self.convertor_ui.lineEdit_cm4.textChanged.connect(lambda: self.convert_inertia('cm4'))
+        self.convertor_ui.lineEdit_m4.textChanged.connect(lambda: self.convert_inertia('m4'))
+
+        # Подключаем обработчики изменения текста для моментов сопротивления
+        self.convertor_ui.lineEdit_mm3.textChanged.connect(lambda: self.convert_section_modulus('mm3'))
+        self.convertor_ui.lineEdit_cm3.textChanged.connect(lambda: self.convert_section_modulus('cm3'))
+        self.convertor_ui.lineEdit_m3.textChanged.connect(lambda: self.convert_section_modulus('m3'))
+
+
     def convert_force(self, unit):
         """
         -Описание: Метод обрабатывает lineEdit'ы, пересчитывает единицы измерения силы и выводит их в
         соответствующую строку
-        -Принимает: key_force - str значение/флаг соответствующее конкретной единице измерения
+        -Принимает: unit - str значение/флаг соответствующее конкретной единице измерения
         -Возвращает: Ничего
         """
         try:
@@ -165,7 +187,13 @@ class ConvertorBranch(QtWidgets.QMainWindow):
             self.convertor_ui.lineEdit_moment1.blockSignals(False)
             self.convertor_ui.lineEdit_moment2.blockSignals(False)
 
-    def convert_pressure(self, key):
+    def convert_pressure(self, unit):
+        """
+            -Описание: Метод обрабатывает lineEdit'ы, пересчитывает единицы измерения давлений и выводит их в
+            соответствующую строку
+            -Принимает: unit - str значение/флаг соответствующее конкретной единице измерения
+            -Возвращает: Ничего
+        """
         length_measurement = {'m²': 1 ** 2, 'cm²': 100 ** 2, 'mm²': 1000 ** 2, 'inch²': 39.37008 ** 2,
                               'foot²': 3.28084 ** 2}
 
@@ -174,7 +202,7 @@ class ConvertorBranch(QtWidgets.QMainWindow):
             for line_edit in self.convertor_ui.groupBox_pressure.findChildren(QLineEdit):
                 line_edit.blockSignals(True)
 
-            pressure_input = float(getattr(self.convertor_ui, f"lineEdit_{key}").text())
+            pressure_input = float(getattr(self.convertor_ui, f"lineEdit_{unit}").text())
 
             force_input = self.convertor_ui.comboBox_pressure_f1.currentText()
             quadratic_dimension_input = self.convertor_ui.comboBox_pressure_qd1.currentText()
@@ -183,7 +211,7 @@ class ConvertorBranch(QtWidgets.QMainWindow):
             quadratic_dimension_output = self.convertor_ui.comboBox_pressure_qd2.currentText()
 
             # Математический блок с проверкой по ключам
-            if key == 'pressure_1':
+            if unit == 'pressure_1':
                 # Если входные и выходные единицы одинаковы — просто копируем значение
                 if force_input == force_output and quadratic_dimension_input == quadratic_dimension_output:
                     self.convertor_ui.lineEdit_pressure_2.setText(f"{pressure_input:.3f}")
@@ -203,7 +231,7 @@ class ConvertorBranch(QtWidgets.QMainWindow):
                 pressure_output_Pa = pressure_output_MPa * 1000000
                 self.convertor_ui.lineEdit_pressure_3.setText(f"{pressure_output_Pa:.3f}")
 
-            if key == 'pressure_3':  # Pa
+            if unit == 'pressure_3':  # Pa
                 pressure_output_MPa = pressure_input / 1000000
                 self.convertor_ui.lineEdit_pressure_5.setText(f"{pressure_output_MPa:.3f}")
 
@@ -218,7 +246,7 @@ class ConvertorBranch(QtWidgets.QMainWindow):
                                                (1 / length_measurement[quadratic_dimension_output]))
                 self.convertor_ui.lineEdit_pressure_2.setText(f"{pressure_output_second_line:.3f}")
 
-            if key == 'pressure_4':  # kPa
+            if unit == 'pressure_4':  # kPa
                 pressure_output_MPa = pressure_input / 1000
                 self.convertor_ui.lineEdit_pressure_5.setText(f"{pressure_output_MPa:.3f}")
 
@@ -233,7 +261,7 @@ class ConvertorBranch(QtWidgets.QMainWindow):
                                                (1 / length_measurement[quadratic_dimension_output]))
                 self.convertor_ui.lineEdit_pressure_2.setText(f"{pressure_output_second_line:.3f}")
 
-            if key == 'pressure_5':  # MPa
+            if unit == 'pressure_5':  # MPa
                 pressure_output_kPa = pressure_input * 1000
                 self.convertor_ui.lineEdit_pressure_4.setText(f"{pressure_output_kPa:.3f}")
 
@@ -256,4 +284,182 @@ class ConvertorBranch(QtWidgets.QMainWindow):
         finally:
             # Возвращаем обработчики
             for line_edit in self.convertor_ui.groupBox_pressure.findChildren(QLineEdit):
+                line_edit.blockSignals(False)
+
+    def convert_dimensions(self, unit):
+        """
+            -Описание: Метод обрабатывает lineEdit'ы, пересчитывает единицы измерения линейных размеров и выводит их в
+            соответствующую строку
+            -Принимает: unit - str значение/флаг соответствующее конкретной единице измерения
+            -Возвращает: Ничего
+        """
+        try:
+            # Отключаем обработчики, чтобы избежать рекурсии
+            for line_edit in self.convertor_ui.groupBox_lenghts.findChildren(QLineEdit):
+                line_edit.blockSignals(True)
+
+            # Математический блок с проверкой по ключам
+            value = float(getattr(self.convertor_ui, f"lineEdit_{unit}").text())
+
+            if unit == 'mm':
+                for line_edit in self.convertor_ui.groupBox_lenghts.findChildren(QLineEdit):
+                    if line_edit != self.convertor_ui.lineEdit_mm:
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(value, unit, unit_name):.3f}")
+
+            if unit == 'cm':
+                for line_edit in self.convertor_ui.groupBox_lenghts.findChildren(QLineEdit):
+                    if line_edit != self.convertor_ui.lineEdit_cm:
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(value, unit, unit_name):.3f}")
+
+            if unit == 'm':
+                for line_edit in self.convertor_ui.groupBox_lenghts.findChildren(QLineEdit):
+                    if line_edit != self.convertor_ui.lineEdit_m:
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(value, unit, unit_name):.3f}")
+
+            if unit == 'inch':
+                for line_edit in self.convertor_ui.groupBox_lenghts.findChildren(QLineEdit):
+                    if line_edit != self.convertor_ui.lineEdit_inch:
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(value, unit, unit_name):.3f}")
+
+            if unit == 'foot':
+                for line_edit in self.convertor_ui.groupBox_lenghts.findChildren(QLineEdit):
+                    if line_edit != self.convertor_ui.lineEdit_foot:
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(value, unit, unit_name):.3f}")
+
+        except ValueError:
+            # Очищаем все поля
+            for line_edit in self.convertor_ui.groupBox_lenghts.findChildren(QLineEdit):
+                line_edit.clear()
+
+        finally:
+            # Возвращаем обработчики
+            for line_edit in self.convertor_ui.groupBox_lenghts.findChildren(QLineEdit):
+                line_edit.blockSignals(False)
+
+    def convert_angles(self, unit):
+        """
+            -Описание: Метод обрабатывает lineEdit'ы, пересчитывает единицы измерения углов и выводит их в
+            соответствующую строку
+            -Принимает: unit - str значение/флаг соответствующее конкретной единице измерения
+            -Возвращает: Ничего
+        """
+        try:
+            # Отключаем обработчики, чтобы избежать рекурсии
+            for line_edit in self.convertor_ui.groupBox_angles.findChildren(QLineEdit):
+                line_edit.blockSignals(True)
+
+            # Математический блок с проверкой по ключам
+            value = float(getattr(self.convertor_ui, f"lineEdit_{unit}").text())
+
+            if unit == 'degrees':
+                for line_edit in self.convertor_ui.groupBox_angles.findChildren(QLineEdit):
+                    if line_edit != self.convertor_ui.lineEdit_degrees:
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(value, unit, unit_name):.3f}")
+
+            if unit == 'radians':
+                for line_edit in self.convertor_ui.groupBox_angles.findChildren(QLineEdit):
+                    if line_edit != self.convertor_ui.lineEdit_radians:
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(value, unit, unit_name):.3f}")
+
+        except ValueError:
+            # Очищаем все поля
+            for line_edit in self.convertor_ui.groupBox_angles.findChildren(QLineEdit):
+                line_edit.clear()
+
+        finally:
+            # Возвращаем обработчики
+            for line_edit in self.convertor_ui.groupBox_angles.findChildren(QLineEdit):
+                line_edit.blockSignals(False)
+
+    def convert_inertia(self, unit):
+        """
+            -Описание: Метод обрабатывает lineEdit'ы, пересчитывает единицы измерения моментов инерции и выводит их в
+            соответствующую строку
+            -Принимает: unit - str значение/флаг соответствующее конкретной единице измерения
+            -Возвращает: Ничего
+        """
+        try:
+            # Отключаем обработчики, чтобы избежать рекурсии
+            for line_edit in self.convertor_ui.groupBox_m_inertia.findChildren(QLineEdit):
+                line_edit.blockSignals(True)
+
+            # Математический блок с проверкой по ключам
+            value = float(getattr(self.convertor_ui, f"lineEdit_{unit}").text())
+
+            if unit == 'mm4':
+                for line_edit in self.convertor_ui.groupBox_m_inertia.findChildren(QLineEdit):
+                    if line_edit != self.convertor_ui.lineEdit_mm4:
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(value, unit, unit_name):.8f}")
+
+            if unit == 'cm4':
+                for line_edit in self.convertor_ui.groupBox_m_inertia.findChildren(QLineEdit):
+                    if line_edit != self.convertor_ui.lineEdit_cm4:
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(value, unit, unit_name):.8f}")
+
+            if unit == 'm4':
+                for line_edit in self.convertor_ui.groupBox_m_inertia.findChildren(QLineEdit):
+                    if line_edit != self.convertor_ui.lineEdit_m4:
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(value, unit, unit_name):.8f}")
+
+        except ValueError:
+            # Очищаем все поля
+            for line_edit in self.convertor_ui.groupBox_m_inertia.findChildren(QLineEdit):
+                line_edit.clear()
+
+        finally:
+            # Возвращаем обработчики
+            for line_edit in self.convertor_ui.groupBox_m_inertia.findChildren(QLineEdit):
+                line_edit.blockSignals(False)
+
+    def convert_section_modulus(self, unit):
+        """
+            -Описание: Метод обрабатывает lineEdit'ы, пересчитывает единицы измерения моментов сопротивления и выводит их в
+            соответствующую строку
+            -Принимает: unit - str значение/флаг соответствующее конкретной единице измерения
+            -Возвращает: Ничего
+        """
+        try:
+            # Отключаем обработчики, чтобы избежать рекурсии
+            for line_edit in self.convertor_ui.groupBox_section_modulus.findChildren(QLineEdit):
+                line_edit.blockSignals(True)
+
+            # Математический блок с проверкой по ключам
+            value = float(getattr(self.convertor_ui, f"lineEdit_{unit}").text())
+
+            if unit == 'mm3':
+                for line_edit in self.convertor_ui.groupBox_section_modulus.findChildren(QLineEdit):
+                    if line_edit != self.convertor_ui.lineEdit_mm3:
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(value, unit, unit_name):.8f}")
+
+            if unit == 'cm3':
+                for line_edit in self.convertor_ui.groupBox_section_modulus.findChildren(QLineEdit):
+                    if line_edit != self.convertor_ui.lineEdit_cm3:
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(value, unit, unit_name):.8f}")
+
+            if unit == 'm3':
+                for line_edit in self.convertor_ui.groupBox_section_modulus.findChildren(QLineEdit):
+                    if line_edit != self.convertor_ui.lineEdit_m3:
+                        unit_name = line_edit.objectName().split('_')[-1]
+                        line_edit.setText(f"{convert(value, unit, unit_name):.8f}")
+
+        except ValueError:
+            # Очищаем все поля
+            for line_edit in self.convertor_ui.groupBox_section_modulus.findChildren(QLineEdit):
+                line_edit.clear()
+
+        finally:
+            # Возвращаем обработчики
+            for line_edit in self.convertor_ui.groupBox_section_modulus.findChildren(QLineEdit):
                 line_edit.blockSignals(False)

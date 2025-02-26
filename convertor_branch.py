@@ -6,70 +6,62 @@ from PyQt5.QtWidgets import QLineEdit
 from ui_designe import *
 from unit_conversion import *
 
+class ConvertorBranch:
+    def __init__(self):
+        self.convertor_ui = None
 
-class ConvertorBranch(QtWidgets.QMainWindow):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.convertor_ui = Ui_RosmaryCandA()
-        self.convertor_ui.setupUi(self)
-        self.setStyleSheet("QMainWindow { background-image:"
-                           " url(D:/Projects/Calculation and analysis of RS/resources/background.jpeg); }")
-
-        # Валидаторы для lineEdit
-        validator = QRegExpValidator(QRegExp(r'\d*\.?\d+'))
-        for line_edit in self.findChildren(QLineEdit):
-            line_edit.setValidator(validator)
-
+    def setup_connections(self):
         # Подключаем обработчики изменения текста для сил
-        self.convertor_ui.lineEdit_kg.textChanged.connect(lambda: self.convert_force('kg'))
-        self.convertor_ui.lineEdit_kN.textChanged.connect(lambda: self.convert_force('kN'))
-        self.convertor_ui.lineEdit_N.textChanged.connect(lambda: self.convert_force('N'))
-        self.convertor_ui.lineEdit_mN.textChanged.connect(lambda: self.convert_force('mN'))
-        self.convertor_ui.lineEdit_daN.textChanged.connect(lambda: self.convert_force('daN'))
-        self.convertor_ui.lineEdit_ib.textChanged.connect(lambda: self.convert_force('ib'))
-        self.convertor_ui.lineEdit_T.textChanged.connect(lambda: self.convert_force('T'))
-        self.convertor_ui.lineEdit_MN.textChanged.connect(lambda: self.convert_force('MN'))
-        self.convertor_ui.lineEdit_kip.textChanged.connect(lambda: self.convert_force('kip'))
+        if self.convertor_ui:
+            self.convertor_ui.lineEdit_kg.textChanged.connect(lambda: self.convert_force('kg'))
+            self.convertor_ui.lineEdit_kN.textChanged.connect(lambda: self.convert_force('kN'))
+            self.convertor_ui.lineEdit_N.textChanged.connect(lambda: self.convert_force('N'))
+            self.convertor_ui.lineEdit_mN.textChanged.connect(lambda: self.convert_force('mN'))
+            self.convertor_ui.lineEdit_daN.textChanged.connect(lambda: self.convert_force('daN'))
+            self.convertor_ui.lineEdit_ib.textChanged.connect(lambda: self.convert_force('ib'))
+            self.convertor_ui.lineEdit_T.textChanged.connect(lambda: self.convert_force('T'))
+            self.convertor_ui.lineEdit_MN.textChanged.connect(lambda: self.convert_force('MN'))
+            self.convertor_ui.lineEdit_kip.textChanged.connect(lambda: self.convert_force('kip'))
 
         # Подключаем обработчики изменения текста для моментво
-        self.convertor_ui.lineEdit_moment1.textChanged.connect(self.convert_moment)
-        self.convertor_ui.lineEdit_moment2.textChanged.connect(self.convert_moment)
-        self.convertor_ui.comboBox_moment_f1.currentIndexChanged.connect(self.convert_moment)
-        self.convertor_ui.comboBox_moment_ld1.currentIndexChanged.connect(self.convert_moment)
-        self.convertor_ui.comboBox_moment_f2.currentIndexChanged.connect(self.convert_moment)
-        self.convertor_ui.comboBox_moment_ld2.currentIndexChanged.connect(self.convert_moment)
+            self.convertor_ui.lineEdit_moment1.textChanged.connect(self.convert_moment)
+            self.convertor_ui.lineEdit_moment2.textChanged.connect(self.convert_moment)
+            self.convertor_ui.comboBox_moment_f1.currentIndexChanged.connect(self.convert_moment)
+            self.convertor_ui.comboBox_moment_ld1.currentIndexChanged.connect(self.convert_moment)
+            self.convertor_ui.comboBox_moment_f2.currentIndexChanged.connect(self.convert_moment)
+            self.convertor_ui.comboBox_moment_ld2.currentIndexChanged.connect(self.convert_moment)
 
         # Подключаем обработчики изменения текста для давлений
-        self.convertor_ui.comboBox_pressure_f1.currentIndexChanged.connect(lambda: self.convert_pressure('pressure_1'))
-        self.convertor_ui.comboBox_pressure_qd1.currentIndexChanged.connect(lambda: self.convert_pressure('pressure_1'))
-        self.convertor_ui.comboBox_pressure_f2.currentIndexChanged.connect(lambda: self.convert_pressure('pressure_1'))
-        self.convertor_ui.comboBox_pressure_qd2.currentIndexChanged.connect(lambda: self.convert_pressure('pressure_1'))
-        self.convertor_ui.lineEdit_pressure_1.textChanged.connect(lambda: self.convert_pressure('pressure_1'))
-        self.convertor_ui.lineEdit_pressure_2.textChanged.connect(lambda: self.convert_pressure('pressure_1'))
-        self.convertor_ui.lineEdit_pressure_3.textChanged.connect(lambda: self.convert_pressure('pressure_3'))
-        self.convertor_ui.lineEdit_pressure_4.textChanged.connect(lambda: self.convert_pressure('pressure_4'))
-        self.convertor_ui.lineEdit_pressure_5.textChanged.connect(lambda: self.convert_pressure('pressure_5'))
+            self.convertor_ui.comboBox_pressure_f1.currentIndexChanged.connect(lambda: self.convert_pressure('pressure_1'))
+            self.convertor_ui.comboBox_pressure_qd1.currentIndexChanged.connect(lambda: self.convert_pressure('pressure_1'))
+            self.convertor_ui.comboBox_pressure_f2.currentIndexChanged.connect(lambda: self.convert_pressure('pressure_1'))
+            self.convertor_ui.comboBox_pressure_qd2.currentIndexChanged.connect(lambda: self.convert_pressure('pressure_1'))
+            self.convertor_ui.lineEdit_pressure_1.textChanged.connect(lambda: self.convert_pressure('pressure_1'))
+            self.convertor_ui.lineEdit_pressure_2.textChanged.connect(lambda: self.convert_pressure('pressure_1'))
+            self.convertor_ui.lineEdit_pressure_3.textChanged.connect(lambda: self.convert_pressure('pressure_3'))
+            self.convertor_ui.lineEdit_pressure_4.textChanged.connect(lambda: self.convert_pressure('pressure_4'))
+            self.convertor_ui.lineEdit_pressure_5.textChanged.connect(lambda: self.convert_pressure('pressure_5'))
 
         # Подключаем обработчики изменения текста для линейных размеров
-        self.convertor_ui.lineEdit_mm.textChanged.connect(lambda: self.convert_dimensions('mm'))
-        self.convertor_ui.lineEdit_cm.textChanged.connect(lambda: self.convert_dimensions('cm'))
-        self.convertor_ui.lineEdit_m.textChanged.connect(lambda: self.convert_dimensions('m'))
-        self.convertor_ui.lineEdit_inch.textChanged.connect(lambda: self.convert_dimensions('inch'))
-        self.convertor_ui.lineEdit_foot.textChanged.connect(lambda: self.convert_dimensions('foot'))
+            self.convertor_ui.lineEdit_mm.textChanged.connect(lambda: self.convert_dimensions('mm'))
+            self.convertor_ui.lineEdit_cm.textChanged.connect(lambda: self.convert_dimensions('cm'))
+            self.convertor_ui.lineEdit_m.textChanged.connect(lambda: self.convert_dimensions('m'))
+            self.convertor_ui.lineEdit_inch.textChanged.connect(lambda: self.convert_dimensions('inch'))
+            self.convertor_ui.lineEdit_foot.textChanged.connect(lambda: self.convert_dimensions('foot'))
 
         # Подключаем обработчики изменения текста для углов
-        self.convertor_ui.lineEdit_degrees.textChanged.connect(lambda: self.convert_angles('degrees'))
-        self.convertor_ui.lineEdit_radians.textChanged.connect(lambda: self.convert_angles('radians'))
+            self.convertor_ui.lineEdit_degrees.textChanged.connect(lambda: self.convert_angles('degrees'))
+            self.convertor_ui.lineEdit_radians.textChanged.connect(lambda: self.convert_angles('radians'))
 
         # Подключаем обработчики изменения текста для моментов инерции
-        self.convertor_ui.lineEdit_mm4.textChanged.connect(lambda: self.convert_inertia('mm4'))
-        self.convertor_ui.lineEdit_cm4.textChanged.connect(lambda: self.convert_inertia('cm4'))
-        self.convertor_ui.lineEdit_m4.textChanged.connect(lambda: self.convert_inertia('m4'))
+            self.convertor_ui.lineEdit_mm4.textChanged.connect(lambda: self.convert_inertia('mm4'))
+            self.convertor_ui.lineEdit_cm4.textChanged.connect(lambda: self.convert_inertia('cm4'))
+            self.convertor_ui.lineEdit_m4.textChanged.connect(lambda: self.convert_inertia('m4'))
 
         # Подключаем обработчики изменения текста для моментов сопротивления
-        self.convertor_ui.lineEdit_mm3.textChanged.connect(lambda: self.convert_section_modulus('mm3'))
-        self.convertor_ui.lineEdit_cm3.textChanged.connect(lambda: self.convert_section_modulus('cm3'))
-        self.convertor_ui.lineEdit_m3.textChanged.connect(lambda: self.convert_section_modulus('m3'))
+            self.convertor_ui.lineEdit_mm3.textChanged.connect(lambda: self.convert_section_modulus('mm3'))
+            self.convertor_ui.lineEdit_cm3.textChanged.connect(lambda: self.convert_section_modulus('cm3'))
+            self.convertor_ui.lineEdit_m3.textChanged.connect(lambda: self.convert_section_modulus('m3'))
 
 
     def convert_force(self, unit):
@@ -131,7 +123,6 @@ class ConvertorBranch(QtWidgets.QMainWindow):
                     if line_edit != self.convertor_ui.lineEdit_kip:
                         unit_name = line_edit.objectName().split('_')[-1]
                         line_edit.setText(f"{convert(value, unit, unit_name):.3f}")
-
 
         except ValueError:
             # Очищаем все поля

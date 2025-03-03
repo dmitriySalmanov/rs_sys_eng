@@ -11,6 +11,11 @@ class ConvertorBranch:
         self.convertor_ui = None
 
     def setup_connections(self):
+        '''
+        -Описание: Метод подключает оброботчкики
+        -Принимает: Ничего
+        -Возвращает: Ничего
+        '''
         # Подключаем обработчики изменения текста для сил
         if self.convertor_ui:
             self.convertor_ui.lineEdit_kg.textChanged.connect(lambda: self.convert_force('kg'))

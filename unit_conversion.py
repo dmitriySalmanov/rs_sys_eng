@@ -6,6 +6,12 @@ import math
 
 
 def convert(value=1, unit='kg', to_unit='kN'):
+    '''
+    -Описание: Функция переводит единицы измерения
+    -Принимает: value - int/float значение изначальной единицы, unit - str значение изначальной единицы,
+                to_unit - str значение конечной единицы измерения
+    -Возвращает: value - int/float преобразованное в to_unit значение
+    '''
     # Силы
     if to_unit == 'kN':
         if unit == 'kg':
